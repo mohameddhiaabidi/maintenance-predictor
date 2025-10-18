@@ -1,0 +1,21 @@
+# Dockerfile.oracle
+FROM container-registry.oracle.com/database/express:21.3.0-xe
+
+# Switch to root to copy files
+USER root
+
+# Create directories for data import
+RUN mkdir -p /opt/oracle/import_data
+
+# Copy your DMP file into the image
+COPY GMAOS25082025.DMP /opt/oracle/import_data/
+
+# Copy import script
+COPY import_data.sh /opt/oracle/import_data/
+
+# Set permissions
+RUN chown -R oracle:dba /opt/oracle/import_data && \
+    chmod +x /opt/oracle/import_data/import_data.sh
+
+# Switch back to oracle user
+USER oracle
